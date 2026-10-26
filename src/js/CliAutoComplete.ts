@@ -121,7 +121,7 @@ const CliAutoComplete: CliAutoCompleteApi = {
         return (
             this.isBuilding() ||
             (this.configEnabled &&
-                useFlightControllerStore().config.flightControllerIdentifier === "BTFL" &&
+                ["BTFL", "ADFL"].includes(useFlightControllerStore().config.flightControllerIdentifier) &&
                 this.builder.state !== "fail")
         );
     },

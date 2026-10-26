@@ -191,7 +191,7 @@ class AutoDetect {
         const fcStore = useFlightControllerStore();
         if (
             semver.gte(fcStore.config.apiVersion, API_VERSION_1_45) &&
-            fcStore.config.flightControllerIdentifier === "BTFL"
+            ["BTFL", "ADFL"].includes(fcStore.config.flightControllerIdentifier)
         ) {
             await MSP.promise(MSPCodes.MSP2_GET_TEXT, mspHelper!.crunch(MSPCodes.MSP2_GET_TEXT, MSP2TextType.BUILDKEY));
             await MSP.promise(

@@ -922,7 +922,7 @@ function onOpen(openInfo: unknown) {
 
             if (semver.gte(fcStore.config.apiVersion, CONFIGURATOR.API_VERSION_ACCEPTED)) {
                 MSP.send_message(MSPCodes.MSP_FC_VARIANT, false, false, function () {
-                    if (fcStore.config.flightControllerIdentifier === "BTFL") {
+                    if (["BTFL", "ADFL"].includes(fcStore.config.flightControllerIdentifier)) {
                         MSP.send_message(MSPCodes.MSP_FC_VERSION, false, false, function () {
                             gui_log(
                                 i18n.getMessage("fcInfoReceived", [
