@@ -1,8 +1,8 @@
 //! Builds and flashes adaflight from an adaflight checkout on this machine.
 //!
 //! The firmware flasher's adaflight tab runs the checkout's own tools: `tools/featuregen.py --json` for a
-//! board's features, `target.do` for a build of a feature selection, and `adaflight_dfu` from `tools/dfu`
-//! to flash that build's files through the STM32 bootloader. Each line a tool prints goes to the frontend as
+//! board's features, `tools/featuresize.py` for each feature's flash cost, `target.do` for a build of a feature
+//! selection, and `adaflight_dfu` from `tools/dfu` to flash that build's files through the STM32 bootloader. Each line a tool prints goes to the frontend as
 //! an `adaflight-log` event while it runs. One tool runs at a time.
 
 use std::io::{BufRead, BufReader};
@@ -183,6 +183,56 @@ pub async fn adaflight_build(
     })
     .await
     .map_err(|e| e.to_string())?
+}
+
+/// Measures each feature's flash cost for `board` through `tools/featuresize.py`, a build per feature.
+#[tauri::command]
+pub async fn adaflight_measure(
+    app: AppHandle,
+    checkout: String,
+    board: String,
+    features: String,
+    crate_name: String,
+) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let _busy = Busy::take()?;
+        let dir = checkout_dir(&checkout)?;
+        check_board(&board)?;
+        check_features(&features)?;
+        check_crate(&crate_name)?;
+        let mut command = Command::new("python3");
+        command
+            .current_dir(&dir)
+            .args(["tools/featuresize.py", &board, &features]);
+        let (ok, _) = run_logged(&app, command)?;
+        if !ok {
+            return Err("the feature measurement failed".into());
+        }
+        std::fs::read_to_string(sizes_file(&dir, &crate_name, &board)).map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+/// The board's last measured feature costs, or an empty string when it has none.
+#[tauri::command]
+pub async fn adaflight_sizes(
+    checkout: String,
+    board: String,
+    crate_name: String,
+) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let dir = checkout_dir(&checkout)?;
+        check_board(&board)?;
+        check_crate(&crate_name)?;
+        Ok(std::fs::read_to_string(sizes_file(&dir, &crate_name, &board)).unwrap_or_default())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+fn sizes_file(dir: &std::path::Path, crate_name: &str, board: &str) -> PathBuf {
+    dir.join(format!("targets/{crate_name}/bin/sizes-{board}.json"))
 }
 
 /// Builds `tools/dfu` and flashes the last build of `crate_name` through the STM32 bootloader.

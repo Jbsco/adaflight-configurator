@@ -38,6 +38,8 @@ pub fn run() {
             ble::ble_disconnect,
             adaflight::adaflight_features,
             adaflight::adaflight_build,
+            adaflight::adaflight_measure,
+            adaflight::adaflight_sizes,
             adaflight::adaflight_flash
         ]);
     #[cfg(not(target_os = "macos"))]
@@ -48,6 +50,8 @@ pub fn run() {
         mdns::mdns_browse,
         adaflight::adaflight_features,
         adaflight::adaflight_build,
+        adaflight::adaflight_measure,
+        adaflight::adaflight_sizes,
         adaflight::adaflight_flash
     ]);
 
