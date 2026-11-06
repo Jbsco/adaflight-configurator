@@ -27,6 +27,7 @@
                     :on-commit-change="onCommitChange"
                     :on-commit-create="onCommitCreate"
                 />
+                <AdaflightBuildTab v-if="activeFlasherStep === 'adaflight'" />
                 <FlasherFlashTab
                     v-if="activeFlasherStep === 'flash'"
                     :cloud-build="cloudBuild"
@@ -145,6 +146,8 @@ import { useFlightControllerStore } from "@/stores/fc";
 import SponsorTile from "../sponsor/SponsorTile.vue";
 import FlasherBoardBuildTab from "./firmware-flasher/FlasherBoardBuildTab.vue";
 import FlasherFlashTab from "./firmware-flasher/FlasherFlashTab.vue";
+import AdaflightBuildTab from "./firmware-flasher/AdaflightBuildTab.vue";
+import { isTauriDesktop } from "../../js/utils/checkCompatibility";
 import {
     BOARD_SELECTION,
     FLASHER_STATE,
@@ -182,6 +185,7 @@ export default defineComponent({
         SponsorTile,
         FlasherBoardBuildTab,
         FlasherFlashTab,
+        AdaflightBuildTab,
         SubtabNav,
     },
     setup() {
@@ -1790,6 +1794,9 @@ export default defineComponent({
         const subtabItems = computed(() => [
             { label: $t("firmwareFlasherSubTabBoardBuild"), value: "board-build", icon: "i-lucide-cpu" },
             { label: $t("firmwareFlasherSubTabFlash"), value: "flash", icon: "i-lucide-zap" },
+            ...(isTauriDesktop()
+                ? [{ label: $t("firmwareFlasherSubTabAdaflight"), value: "adaflight", icon: "i-lucide-hammer" }]
+                : []),
         ]);
 
         // Return all public methods and state
