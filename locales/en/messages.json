@@ -4080,6 +4080,39 @@
     "firmwareFlasherSubTabFlash": {
         "message": "Flash"
     },
+    "firmwareFlasherSubTabAdaflight": {
+        "message": "adaflight build"
+    },
+    "adaflightBuildCheckout": {
+        "message": "adaflight checkout"
+    },
+    "adaflightBuildBoard": {
+        "message": "Board"
+    },
+    "adaflightBuildLoadFeatures": {
+        "message": "Load features"
+    },
+    "adaflightBuildNoCrate": {
+        "message": "no adaflight crate builds this MCU"
+    },
+    "adaflightBuildBuild": {
+        "message": "Build"
+    },
+    "adaflightBuildFlash": {
+        "message": "Flash through DFU"
+    },
+    "adaflightBuildFits": {
+        "message": "Code $1 of $2 bytes, $3 bytes left"
+    },
+    "adaflightBuildOverflow": {
+        "message": "Selection runs $1 bytes past the flash"
+    },
+    "adaflightBuildFailed": {
+        "message": "Build failed, see the log"
+    },
+    "adaflightBuildFlashFailed": {
+        "message": "Flash failed, see the log"
+    },
     "firmwareFlasherFirmwareNotLoaded": {
         "message": "Firmware not loaded"
     },

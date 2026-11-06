@@ -1,3 +1,4 @@
+mod adaflight;
 mod mdns;
 mod tcp;
 
@@ -34,14 +35,20 @@ pub fn run() {
             ble::ble_scan,
             ble::ble_connect,
             ble::ble_send,
-            ble::ble_disconnect
+            ble::ble_disconnect,
+            adaflight::adaflight_features,
+            adaflight::adaflight_build,
+            adaflight::adaflight_flash
         ]);
     #[cfg(not(target_os = "macos"))]
     let builder = builder.invoke_handler(tauri::generate_handler![
         tcp::tcp_connect,
         tcp::tcp_send,
         tcp::tcp_disconnect,
-        mdns::mdns_browse
+        mdns::mdns_browse,
+        adaflight::adaflight_features,
+        adaflight::adaflight_build,
+        adaflight::adaflight_flash
     ]);
 
     builder
