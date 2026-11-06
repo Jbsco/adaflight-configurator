@@ -4113,6 +4113,36 @@
     "adaflightBuildFlashFailed": {
         "message": "Flash failed, see the log"
     },
+    "adaflightBuildMeasure": {
+        "message": "Measure feature sizes"
+    },
+    "adaflightFitCore": {
+        "message": "Code every build of this board contains: $1"
+    },
+    "adaflightFitFixed": {
+        "message": "Fixed code"
+    },
+    "adaflightFitFeatures": {
+        "message": "Selected features"
+    },
+    "adaflightFitFree": {
+        "message": "Free"
+    },
+    "adaflightFitOver": {
+        "message": "Past end of flash"
+    },
+    "adaflightFitEnd": {
+        "message": "End of flash"
+    },
+    "adaflightFitRamShort": {
+        "message": "RAM short by $1"
+    },
+    "adaflightFitNoBuild": {
+        "message": "does not build"
+    },
+    "adaflightFitNotMeasured": {
+        "message": "No feature sizes measured for this board yet; Measure feature sizes runs a build per feature"
+    },
     "firmwareFlasherFirmwareNotLoaded": {
         "message": "Firmware not loaded"
     },
