@@ -37,16 +37,23 @@
             </div>
             <p v-if="resultText" class="result">{{ resultText }}</p>
             <p v-if="error" class="error">{{ error }}</p>
-            <pre class="log">{{ log.join("\n") }}</pre>
+            <div class="log_toolbar">
+                <USwitch v-model="autoScroll" size="sm" :label="$t('logAutoScroll')" />
+                <UButton icon="i-lucide-copy" size="xs" variant="soft" color="neutral" @click="copyLog">
+                    {{ copied ? $t("cliCopySuccessful") : $t("cliCopyToClipboardBtn") }}
+                </UButton>
+            </div>
+            <pre ref="logArea" class="log">{{ log.join("\n") }}</pre>
         </div>
     </UiBox>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import UiBox from "@/components/elements/UiBox.vue";
 import { get as getConfig, set as setConfig } from "@/js/ConfigStorage";
 import { i18n } from "@/js/localization";
+import Clipboard from "@/js/Clipboard";
 import {
     build,
     changes,
@@ -69,6 +76,10 @@ const loading = ref(false);
 const action = ref<"build" | "flash" | null>(null);
 const error = ref("");
 const log = ref<string[]>([]);
+const logLines = ref(0);
+const logArea = ref<HTMLElement | null>(null);
+const autoScroll = ref(true);
+const copied = ref(false);
 let unlisten: (() => void) | null = null;
 
 const running = computed(() => action.value !== null);
@@ -96,9 +107,30 @@ function saveSettings() {
 
 function addLog(line: string) {
     log.value.push(line);
+    logLines.value++;
     if (log.value.length > MAX_LOG_LINES) {
         log.value.splice(0, log.value.length - MAX_LOG_LINES);
     }
+}
+
+function scrollToBottom() {
+    const el = logArea.value;
+    if (el) {
+        el.scrollTop = el.scrollHeight;
+    }
+}
+
+watch(logLines, () => {
+    if (autoScroll.value) {
+        nextTick(scrollToBottom);
+    }
+});
+
+function copyLog() {
+    Clipboard.writeText(log.value.join("\n"), () => {
+        copied.value = true;
+        setTimeout(() => (copied.value = false), 2000);
+    });
 }
 
 async function loadFeatures() {
@@ -185,7 +217,13 @@ onBeforeUnmount(() => {
 .error {
     color: var(--ui-error);
 }
+.log_toolbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 .log {
+    user-select: text;
     max-height: 20rem;
     overflow: auto;
     font-size: 0.75rem;
